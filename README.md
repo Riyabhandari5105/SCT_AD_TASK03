@@ -1,1 +1,0 @@
-# SCT_AD_TASK03

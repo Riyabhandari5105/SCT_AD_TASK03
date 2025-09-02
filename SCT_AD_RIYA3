@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stopwatch App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    #display {
+      font-size: 2em;
+      margin: 20px;
+    }
+    button {
+      font-size: 1em;
+      padding: 10px 20px;
+      margin: 5px;
+      cursor: pointer;
+    }
+    input {
+      padding: 5px;
+      font-size: 1em;
+      width: 80px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Stopwatch with Timer</h2>
+  <div id="display">00:00:000</div>
+
+  <!-- Timer input -->
+  <label>Set Timer (sec): </label>
+  <input type="number" id="timerInput" placeholder="seconds">
+
+  <div>
+    <button onclick="start()">Start</button>
+    <button onclick="stop()">Stop</button>
+    <button onclick="reset()">Reset</button>
+  </div>
+
+  <script>
+    let startTime, updatedTime, difference, tInterval;
+    let running = false;
+    let timerDuration = 0, timerEnd = null;
+
+    function start() {
+      if (!running) {
+        startTime = new Date().getTime();
+        if (timerDuration > 0 && !timerEnd) {
+          timerEnd = startTime + timerDuration * 1000;
+        }
+        tInterval = setInterval(updateTime, 1);
+        running = true;
+      }
+    }
+
+    function stop() {
+      clearInterval(tInterval);
+      running = false;
+    }
+
+    function reset() {
+      clearInterval(tInterval);
+      running = false;
+      timerEnd = null;
+      document.getElementById("display").innerHTML = "00:00:000";
+    }
+
+    function updateTime() {
+      updatedTime = new Date().getTime();
+      difference = updatedTime - startTime;
+
+      let ms = difference % 1000;
+      let sec = Math.floor((difference / 1000) % 60);
+      let min = Math.floor((difference / (1000 * 60)) % 60);
+
+      ms = ("00" + ms).slice(-3);
+      sec = ("0" + sec).slice(-2);
+      min = ("0" + min).slice(-2);
+
+      document.getElementById("display").innerHTML = `${min}:${sec}:${ms}`;
+
+      // Timer check
+      if (timerEnd && updatedTime >= timerEnd) {
+        clearInterval(tInterval);
+        running = false;
+        alert("⏰ Timer finished!");
+      }
+    }
+
+    document.getElementById("timerInput").addEventListener("change", function () {
+      timerDuration = parseInt(this.value) || 0;
+      timerEnd = null;
+    });
+  </script>
+
+</body>
+</html>
